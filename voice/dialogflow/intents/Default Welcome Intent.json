@@ -1,0 +1,41 @@
+{
+  "id": "13c11ac6-b213-49e1-bf17-6bd572800e21",
+  "name": "Default Welcome Intent",
+  "auto": true,
+  "contexts": [],
+  "responses": [
+    {
+      "resetContexts": false,
+      "action": "input.welcome",
+      "affectedContexts": [],
+      "parameters": [],
+      "messages": [
+        {
+          "type": 0,
+          "lang": "en",
+          "speech": [
+            "Hello! How can I help you?",
+            "Good day! What can I do for you today?",
+            "Greetings! How can I assist?",
+            "It\u0027s a great day for a demo."
+          ]
+        }
+      ],
+      "defaultResponsePlatforms": {},
+      "speech": []
+    }
+  ],
+  "priority": 500000,
+  "webhookUsed": true,
+  "webhookForSlotFilling": false,
+  "lastUpdate": 1550822931,
+  "fallbackIntent": false,
+  "events": [
+    {
+      "name": "WELCOME"
+    },
+    {
+      "name": "GOOGLE_ASSISTANT_WELCOME"
+    }
+  ]
+}

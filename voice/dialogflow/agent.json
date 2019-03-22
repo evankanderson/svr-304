@@ -1,0 +1,41 @@
+{
+  "description": "GCP Next 2019 Demo",
+  "language": "en",
+  "disableInteractionLogs": false,
+  "disableStackdriverLogs": false,
+  "googleAssistant": {
+    "googleAssistantCompatible": true,
+    "welcomeIntentSignInRequired": false,
+    "startIntents": [],
+    "systemIntents": [],
+    "endIntentIds": [],
+    "oAuthLinking": {
+      "required": false,
+      "grantType": "AUTH_CODE_GRANT"
+    },
+    "voiceType": "MALE_1",
+    "capabilities": [],
+    "protocolVersion": "V2",
+    "isDeviceAgent": false
+  },
+  "defaultTimezone": "America/Los_Angeles",
+  "webhook": {
+    "url": "https://fa634af5.ngrok.io",
+    "headers": {
+      "": ""
+    },
+    "available": true,
+    "useForDomains": false,
+    "cloudFunctionsEnabled": false,
+    "cloudFunctionsInitialized": false
+  },
+  "isPrivate": true,
+  "customClassifierMode": "use.after",
+  "mlMinConfidence": 0.3,
+  "supportedLanguages": [],
+  "onePlatformApiVersion": "v2beta1",
+  "analyzeQueryTextSentiment": false,
+  "enabledKnowledgeBaseNames": [],
+  "knowledgeServiceConfidenceAdjustment": -0.4,
+  "dialogBuilderMode": false
+}

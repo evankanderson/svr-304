@@ -1,0 +1,17 @@
+<html lang="en">
+  <head>
+    <title>My Orders</title>
+  </head>
+  <body>
+    {% for order in orders %}
+    <div class="order">
+      <h2>{% order['date'] %}</h2>
+      {% for item in order['items'] %}
+      <div class="item">
+        <span class="name">{% item['item'] %}</span>
+      </div>
+      {% endfor %}
+    </div>
+    {% endfor %}
+  </body>
+</html>

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "673552ae-9c8a-4ec3-aaaf-6b6320f7a8cd",
+    "data": [
+      {
+        "text": "Feed me a ",
+        "userDefined": false
+      },
+      {
+        "text": "sammie",
+        "alias": "food",
+        "meta": "@Foods",
+        "userDefined": true
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "08a2c089-1460-4953-b039-557ab8e414e2",
+    "data": [
+      {
+        "text": "Can I get a ",
+        "userDefined": false
+      },
+      {
+        "text": "salad",
+        "alias": "food",
+        "meta": "@Foods",
+        "userDefined": true
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "fd743ea9-99fe-46aa-9127-40751696d692",
+    "data": [
+      {
+        "text": "salad",
+        "alias": "food",
+        "meta": "@Foods",
+        "userDefined": true
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "0fd83e4e-bc44-428e-98f2-27d9d4a07d92",
+    "data": [
+      {
+        "text": "I want a ",
+        "userDefined": false
+      },
+      {
+        "text": "burger",
+        "alias": "food",
+        "meta": "@Foods",
+        "userDefined": true
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  }
+]
