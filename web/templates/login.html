@@ -2,8 +2,9 @@
   <!-- From https://developers.google.com/identity/sign-in/web/ -->
   <head>
     <meta name="google-signin-scope" content="profile email">
-    <meta name="google-signin-client_id" content="{{clientid}}.apps.googleusercontent.com">
+    <meta name="google-signin-client_id" content="{{clientid}}">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="/orders.js" async defer></script>
   </head>
   <body>
     <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
@@ -15,7 +16,16 @@
         // The ID token you need to pass to your backend:
         var id_token = googleUser.getAuthResponse().id_token;
         // TODO: redirect to order view page
+        fetch('/orders', {headers: {Authorization: "Bearer " + id_token}}).then(
+          resp => {
+            console.log('Got ' + resp.status)
+            return resp.json()
+          }).then(data => {
+            console.log(data)
+          })
+        
         console.log("ID Token: " + id_token);
+        console.log("ID: " + profile.getId())
       }
     </script>
   </body>
