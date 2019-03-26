@@ -5,6 +5,14 @@
     <meta name="google-signin-client_id" content="{{clientid}}">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="/orders.js" async defer></script>
+    <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js" defer></script>
+    <style>
+      .order-item {
+        margin: 16px;
+        font-weight: 700;
+      }
+    </style>
   </head>
   <body>
     <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
@@ -13,20 +21,16 @@
         // Useful data for your client-side scripts:
         var profile = googleUser.getBasicProfile();
 
-        // The ID token you need to pass to your backend:
-        var id_token = googleUser.getAuthResponse().id_token;
-        // TODO: redirect to order view page
-        fetch('/orders', {headers: {Authorization: "Bearer " + id_token}}).then(
-          resp => {
-            console.log('Got ' + resp.status)
-            return resp.json()
-          }).then(data => {
-            console.log(data)
-          })
+        fetchOrders(googleUser)
         
         console.log("ID Token: " + id_token);
         console.log("ID: " + profile.getId())
       }
+      window.onload = e => {
+        fakeUser = {getAuthResponse: function() {return {id_token: 'foo'}}}
+        fetchOrders(fakeUser)
+      }
     </script>
+    <div id="orders" class=""></div>
   </body>
 </html>
