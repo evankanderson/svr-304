@@ -34,14 +34,16 @@ function renderOrder(data) {
     if (item["items"] == undefined) {
       continue;
     }
-    let list = [];
+//    let list = [];
     for (let entree of item["items"]) {
-      list.push(makeEntree(entree));
+//      list.push(makeEntree(entree));
+      container.appendChild(makeEntree(entree))
     }
-    container.appendChild(
+/*    container.appendChild(
       domTree("div", { id: item["id"], className: "mdc-layout-grid" }, 
       domTree("div", {className: "mdc-layout-grid__inner" }, ...list))
     );
+    */
   }
 }
 

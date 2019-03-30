@@ -16,6 +16,7 @@ def _materialize_ref_if_needed(ref_or_snapshot):
     """Return a DocumentSnapshot, given a ref or a snapshot."""
     if isinstance(ref_or_snapshot, firestore.DocumentReference):
         return ref_or_snapshot.get()
+    return ref_or_snapshot
 
 
 class Dish:
@@ -48,6 +49,11 @@ class OrderItem:
         self.name = item
         self.choices = kwds
 
+    def for_json(self):
+        value = {'item': self.name}
+        value.update(self.choices)
+        return value
+
     def as_dict(self):
         value = {'item': self.name}
         value.update(self.choices)
@@ -58,7 +64,7 @@ class Order:
     def __init__(self, ref_or_snapshot):
         data = _materialize_ref_if_needed(ref_or_snapshot)
 
-        self.id = data.id
+        self.id = data.reference.id
         self.__ref = data.reference
         self.items = []
         raw = data.to_dict()
@@ -67,6 +73,12 @@ class Order:
         for item in raw.get('items', []):
             self.items.append(OrderItem(**item))
 
+    def for_json(self):
+        return {'id': self.id,
+        'items': self.items,
+        'user': self.user,
+        'done': self.done}
+
     def set(self):
         data = {
             'user': self.user,
@@ -74,3 +86,14 @@ class Order:
             'items': [x.as_dict() for x in self.items]
         }
         self.__ref.set(data)
+
+
+
+def AllDishes(db):
+    return (Dish(x) for x in db.collection('dishes').get())
+
+def OpenOrders(db):
+    return (Order(x) for x in db.collection('orders').where('done', '!=', 'True').get())
+
+def UserOrders(db, user):
+    return (Order(x) for x in db.collection('orders').where('user', '==', user).get())

@@ -5,12 +5,14 @@ well as Google Sign In for both.
 """
 
 import flask
-import json
+import simplejson
 import logging
 import os
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from google.cloud import firestore
+
+from model import model
 
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
@@ -27,7 +29,7 @@ def read_jwt_token(req):
     auth_request = requests.Request()
     id_info = id_token.verify_oauth2_token(jwt, auth_request,
                                            settings['client_id'])
-    if id_info['iss'] != 'accounts.google.com':
+    if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
         raise AssertionError(
             'Got a token for the wrong issuer! (%s)' % id_info['iss'])
     return id_info
@@ -46,18 +48,15 @@ def show_my_orders():
     """Show the currently logged-in user's orders."""
     user = read_jwt_token(flask.request)
     app.logger.info('Reading orders for %s', user['sub'])
-    orders = db.collection('orders').where('user', '==', user['sub']).get()
+    orders = model.UserOrders(db, user['sub'])
     data = [{'id': user['sub']}]
-    for order in orders:
-        item = {'id': order.reference.id}
-        item.update(order.to_dict())
-        data.append(item)
-    return json.dumps(data)
+    data.extend(orders)
+    return simplejson.dumps(data, for_json=True)
 
 
-@app.route('/orders.js')
-def serve_orders():
-    return flask.render_template('orders.js')
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return flask.send_from_directory('static', path)
 
 
 @app.before_first_request

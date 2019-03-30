@@ -5,7 +5,7 @@
   "disableStackdriverLogs": false,
   "googleAssistant": {
     "googleAssistantCompatible": true,
-    "welcomeIntentSignInRequired": false,
+    "welcomeIntentSignInRequired": true,
     "startIntents": [],
     "systemIntents": [],
     "endIntentIds": [],
