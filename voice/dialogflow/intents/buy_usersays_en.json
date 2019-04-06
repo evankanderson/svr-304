@@ -1,0 +1,57 @@
+[
+  {
+    "id": "35961e08-ab7e-4f61-ae62-1f341db75225",
+    "data": [
+      {
+        "text": "I want to buy something",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "64c0dffd-f5a7-45e8-87f1-a12c15e49085",
+    "data": [
+      {
+        "text": "buy some food",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "b5323b63-3f0e-43c9-a39a-6c382cddabb9",
+    "data": [
+      {
+        "text": "order",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "33063594-b069-4e78-9849-39d8c861f32f",
+    "data": [
+      {
+        "text": "Place an order",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "85aaca77-7f72-46ae-8252-a8a736826e60",
+    "data": [
+      {
+        "text": "I want to place an order",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "value": "romaine",
+    "synonyms": [
+      "romaine"
+    ]
+  },
+  {
+    "value": "spinach",
+    "synonyms": [
+      "spinach"
+    ]
+  },
+  {
+    "value": "kale",
+    "synonyms": [
+      "kale"
+    ]
+  },
+  {
+    "value": "iceberg",
+    "synonyms": [
+      "iceberg"
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "value": "chicken",
+    "synonyms": [
+      "chicken"
+    ]
+  },
+  {
+    "value": "salmon",
+    "synonyms": [
+      "salmon"
+    ]
+  },
+  {
+    "value": "bacon",
+    "synonyms": [
+      "bacon"
+    ]
+  },
+  {
+    "value": "fresh tofu",
+    "synonyms": [
+      "fresh tofu"
+    ]
+  },
+  {
+    "value": "fried tofu",
+    "synonyms": [
+      "fried tofu"
+    ]
+  }
+]

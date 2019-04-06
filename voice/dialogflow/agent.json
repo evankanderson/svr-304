@@ -5,7 +5,7 @@
   "disableStackdriverLogs": false,
   "googleAssistant": {
     "googleAssistantCompatible": true,
-    "welcomeIntentSignInRequired": true,
+    "welcomeIntentSignInRequired": false,
     "startIntents": [],
     "systemIntents": [],
     "endIntentIds": [],
@@ -16,11 +16,12 @@
     "voiceType": "MALE_1",
     "capabilities": [],
     "protocolVersion": "V2",
+    "autoPreviewEnabled": true,
     "isDeviceAgent": false
   },
   "defaultTimezone": "America/Los_Angeles",
   "webhook": {
-    "url": "https://fa634af5.ngrok.io",
+    "url": "https://us-central1-next-svr304-2019.cloudfunctions.net/voice",
     "headers": {
       "": ""
     },

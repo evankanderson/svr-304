@@ -1,6 +1,6 @@
 {
-  "id": "15c0ebed-b3e0-4450-beab-b884e732d56a",
-  "name": "Foods",
+  "uuid": "d053e53a-57fa-11e9-8f95-b4d5bdf5237c",
+  "name": "Premium",
   "isOverridable": true,
   "isEnum": false,
   "automatedExpansion": true

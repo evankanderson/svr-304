@@ -1,0 +1,35 @@
+[
+  {
+    "id": "902628ad-684c-4c1c-9557-778eab33120b",
+    "data": [
+      {
+        "text": "commands",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "d3242d4e-8155-484d-800e-3ca7857aff28",
+    "data": [
+      {
+        "text": "help",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "3b372c44-fb77-462d-8e3a-a655ed993c4d",
+    "data": [
+      {
+        "text": "What can you do?",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  }
+]

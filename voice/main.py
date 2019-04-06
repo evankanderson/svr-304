@@ -1,3 +1,12 @@
+"""Main dialogflow webhook handler, handles interactive voice prompts.
+
+See the `voice` function and the HANDLERS map for the dispatch of specific
+Intents.
+
+To deploy:
+  gcloud functions deploy voice --runtime python37 --trigger-http
+"""
+
 import json
 import random
 import logging
@@ -55,7 +64,7 @@ def welcome(request_json: dict):
 
 def list_menu(request_json: dict):
     dishes = [x for x in model.AllDishes(db)]
-    concat = ', '.join((x.name for x in dishes))
+    concat = ', '.join(('a ' + x.name for x in dishes))
     count = len(dishes)
     user = extract_user(request_json)
     logging.info(f'User is {user}')
@@ -166,7 +175,7 @@ def validate_payment(request_json: dict):
 
 def add_item(request_json: dict):
     user = extract_user(request_json)
-    if not 'email' in 'user':
+    if 'email' not in 'user':
         return response('Please log in first')
     return response(f'Got it, {user["email"]}')
 

@@ -9,6 +9,8 @@ the object from .get() into the model, except in cases where you want to reuse
 the dictionary.
 """
 
+import logging
+
 from google.cloud import firestore
 
 
@@ -67,33 +69,53 @@ class Order:
         self.id = data.reference.id
         self.__ref = data.reference
         self.items = []
-        raw = data.to_dict()
+        raw = data.to_dict() or {}
+        logging.info('Data from %s is %s', self.__ref, raw)
+        logging.info('Path is %s (%s)', '/'.join(self.__ref._path), type(self.__ref))
+        logging.info('Reading path: %s', self.__ref.path)
         self.user = raw.get('user', '0')
         self.done = raw.get('done', False)
         for item in raw.get('items', []):
             self.items.append(OrderItem(**item))
 
-    def for_json(self):
-        return {'id': self.id,
-        'items': self.items,
-        'user': self.user,
-        'done': self.done}
+    @property
+    def ref(self):
+        return self.__ref
 
-    def set(self):
-        data = {
+    @property
+    def path(self):
+        return self.__ref.path
+
+    def for_json(self):
+        return {
+            'id': self.id,
+            'items': self.items,
+            'user': self.user,
+            'done': self.done
+        }
+
+    def as_dict(self):
+        return {
             'user': self.user,
             'done': self.done,
             'items': [x.as_dict() for x in self.items]
         }
-        self.__ref.set(data)
 
+    def set(self):
+        data = self.as_dict()
+        logging.info('Writing %s', data)
+        self.__ref.set(data)
 
 
 def AllDishes(db):
     return (Dish(x) for x in db.collection('dishes').get())
 
+
 def OpenOrders(db):
-    return (Order(x) for x in db.collection('orders').where('done', '!=', 'True').get())
+    return (Order(x)
+            for x in db.collection('orders').where('done', '!=', 'True').get())
+
 
 def UserOrders(db, user):
-    return (Order(x) for x in db.collection('orders').where('user', '==', user).get())
+    return (Order(x)
+            for x in db.collection('orders').where('user', '==', user).get())

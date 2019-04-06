@@ -1,0 +1,35 @@
+[
+  {
+    "id": "eebf4a03-bec0-4a1a-ad98-a9fd862bba66",
+    "data": [
+      {
+        "text": "What kind of food do you have?",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "c2973865-232b-4530-b2b1-cfb46b202656",
+    "data": [
+      {
+        "text": "What can I order?",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "1b1c945b-c315-4be7-9066-f7e550079016",
+    "data": [
+      {
+        "text": "What\u0027s on the menu?",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  }
+]
