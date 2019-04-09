@@ -226,7 +226,7 @@ def checkout(request_json: dict):
                 "richResponse": {
                     "items": [{
                         "simpleResponse": {
-                            "textToSpeech": "PLACEHOLDER"
+                            "textToSpeech": "Google will ask you for payment details. "
                         }
                     }]
                 }
