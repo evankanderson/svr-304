@@ -1,6 +1,6 @@
 {
-  "id": "76e9855f-b6ed-4cb5-a4dd-2d3a1134b19e",
-  "name": "add",
+  "id": "79c584f8-0eca-4882-bda7-7cb27daac4ad",
+  "name": "receipt",
   "auto": true,
   "contexts": [
     "order"
@@ -15,22 +15,7 @@
           "lifespan": 5
         }
       ],
-      "parameters": [
-        {
-          "id": "37492528-3985-4ebb-948e-a56daf535262",
-          "required": true,
-          "dataType": "@Dishes",
-          "name": "Dish",
-          "value": "$Dish",
-          "prompts": [
-            {
-              "lang": "en",
-              "value": "What do you want to order?"
-            }
-          ],
-          "isList": false
-        }
-      ],
+      "parameters": [],
       "messages": [
         {
           "type": 0,
@@ -46,5 +31,9 @@
   "webhookUsed": true,
   "webhookForSlotFilling": false,
   "fallbackIntent": false,
-  "events": []
+  "events": [
+    {
+      "name": "actions_intent_TRANSACTION_DECISION"
+    }
+  ]
 }
