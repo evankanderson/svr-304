@@ -27,6 +27,9 @@ def background(data, context):
         return
     order = model.Order(doc)
 
+    if not order.total:
+        order.updateTotal(model.PriceSheet(model.AllDishes(db)))
+
     if not order.done and order.token:
         time.sleep(40)
         order.done = True

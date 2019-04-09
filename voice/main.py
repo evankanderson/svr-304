@@ -187,20 +187,19 @@ def add_item(request_json: dict):
 def checkout(request_json: dict):
     order_id = get_context(request_json, '/order').get('orderId')
     order = model.Order(db.document(f'orders/{order_id}'))
-    prices = {}
-    for d in model.AllDishes(db):
-        prices[d.name] = d.price
+    prices = model.PriceSheet(model.AllDishes(db))
     total = 0
     lineItems = []
     id = 0
     for item in order.items:
         id += 1
-        total += prices[item.name]
+        price = item.get_price(prices)
+        total += price
         lineItems.append({
             'id': str(id),
             'name': item.name,
             'type': 'REGULAR',
-            'price': to_price(prices[item.name]),
+            'price': to_price(price),
             'quantity': 1,
         })
 
@@ -222,7 +221,14 @@ def checkout(request_json: dict):
                 'expectUserResponse': True,
                 'systemIntent': {
                     'intent': 'actions.intent.TRANSACTION_DECISION',
-                    'data': data
+                    'data': data,
+                },
+                "richResponse": {
+                    "items": [{
+                        "simpleResponse": {
+                            "textToSpeech": "PLACEHOLDER"
+                        }
+                    }]
                 }
             }
         }

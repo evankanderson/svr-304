@@ -17,6 +17,7 @@ from model import model
 # If `entrypoint` is not defined in app.yaml, App Engine will look for an app
 # called `app` in `main.py`.
 app = flask.Flask(__name__)
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 60
 db = firestore.Client()
 settings = {}
 
@@ -55,7 +56,7 @@ def show_my_orders():
     orders = model.UserOrders(db, user['sub'])
     data = [{'id': user['sub']}]
     data.extend(orders)
-    return simplejson.dumps(data, for_json=True)
+    return simplejson.dumps(data, for_json=True, indent=2)
 
 @app.route('/chef')
 def show_todo_orders():
@@ -68,7 +69,7 @@ def show_todo_orders():
 
 @app.route('/static/<path:path>')
 def serve_static(path):
-    return flask.send_from_directory('static', path)
+    return flask.send_from_directory('static', path, cache_timeout=60)
 
 
 @app.before_first_request

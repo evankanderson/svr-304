@@ -35,11 +35,13 @@ function renderOrder(data) {
       continue;
     }
     entree_box = domTree("div", { className: "mdc-layout-grid__inner"})
-    order = domTree("div", {className: "mdc-layout-grid__cell--span-12 order" },
+    order = domTree("div", {className: "mdc-layout-grid__cell--span-12" },
         domTree("div", { className: "mdc-card order" },
           domTree("h3", { className: "order-item mdc-typography mdc-typography--headline5" },
-            new Date(item["date"]).toLocaleString()),
-          entree_box))
+            new Date(item.date).toLocaleString("en-US")),
+          entree_box,
+          domTree('div', {className: "mdc-typography total"},
+            'Total: ' + item.totalPrice.toFixed(2))))
     for (let entree of item["items"]) {
       entree_box.appendChild(makeEntree(entree))
     }

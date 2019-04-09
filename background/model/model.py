@@ -29,6 +29,7 @@ class Dish:
         self.price = data.get('price')
         self._ref = data.reference
 
+    @property
     def ingredients(self):
         """Yields a list of Ingredient objects for this dish."""
         ingredients = self._ref.collection('ingredients')
@@ -38,18 +39,27 @@ class Dish:
 
 class Ingredient:
     def __init__(self, ref_or_snapshot):
-        data = _materialize_ref_if_needed(ref_or_snapshot)
+        doc = _materialize_ref_if_needed(ref_or_snapshot)
+        data = doc.to_dict()
 
-        self.name = data.id
-        self.max_items = data.get('max')
+        self.name = doc.id
+        self.max_items = data.get('max', 0)
         self.choices = data.get('names')
-        self.price = data.to_dict().get('charge', 0)
+        self.price = data.get('charge', 0)
 
 
 class OrderItem:
     def __init__(self, item=None, **kwds):
         self.name = item
         self.choices = kwds
+
+    def get_price(self, pricing_map: dict):
+        price = pricing_map[self.name]
+        for items in self.choices.values():
+            for item in items:
+                if item in pricing_map:
+                    price += pricing_map[item]
+        return price
 
     def for_json(self):
         value = {'item': self.name}
@@ -75,11 +85,13 @@ class Order:
         logging.info('Path is %s (%s)', '/'.join(self.__ref._path),
                      type(self.__ref))
         logging.info('Reading path: %s', self.__ref.path)
-        self.user = raw.get('user', '0')
-        self.done = raw.get('done', False)
-        self.token = raw.get('token', {})
-        for item in raw.get('items', []):
+        self.user = raw.pop('user', '0')
+        self.done = raw.pop('done', False)
+        self.token = raw.pop('token', {})
+        self.total = raw.pop('totalPrice', None)
+        for item in raw.pop('items', []):
             self.items.append(OrderItem(**item))
+        self.extra_fields = raw
 
     @property
     def ref(self):
@@ -89,6 +101,13 @@ class Order:
     def path(self):
         return self.__ref.path
 
+    def updateTotal(self, price_map: dict):
+        total = 0
+        for item in self.items:
+            total += item.get_price(price_map)
+            logging.info(f'total is now {total} with {item.name}')
+        self.total = total
+
     def for_json(self):
         return {
             'id': self.id,
@@ -96,16 +115,20 @@ class Order:
             'user': self.user,
             'done': self.done,
             'date': self.date.ToJsonString(),
+            'totalPrice': self.total,
             # Don't show token in rendered JSON!
         }
 
     def as_dict(self):
-        return {
+        base = {
             'user': self.user,
             'done': self.done,
             'items': [x.as_dict() for x in self.items],
             'token': self.token,
+            'totalPrice': self.total,
         }
+        base.update(self.extra_fields)
+        return base
 
     def set(self):
         data = self.as_dict()
@@ -115,6 +138,17 @@ class Order:
 
 def AllDishes(db):
     return (Dish(x) for x in db.collection('dishes').get())
+
+
+def PriceSheet(dishes):
+    price_sheet = {}
+    for dish in dishes:
+        price_sheet[dish.name] = dish.price
+        for category in dish.ingredients:
+            if category.price:
+                for item in category.choices:
+                    price_sheet[item] = category.price
+    return price_sheet
 
 
 def OpenOrders(db):
