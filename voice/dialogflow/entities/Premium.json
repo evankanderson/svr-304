@@ -1,7 +1,8 @@
 {
-  "uuid": "d053e53a-57fa-11e9-8f95-b4d5bdf5237c",
+  "id": "6937359a-755f-4af9-8a07-943c1299c1e6",
   "name": "Premium",
   "isOverridable": true,
   "isEnum": false,
-  "automatedExpansion": true
+  "automatedExpansion": true,
+  "allowFuzzyExtraction": false
 }

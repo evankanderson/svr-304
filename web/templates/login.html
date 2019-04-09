@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css">
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js" defer></script>
     <style>
+      .order {
+        background-color: #c5f3e0;
+        padding: 16px;
+      }
       .order-item {
         margin: 16px;
         font-weight: 700;
@@ -25,13 +29,17 @@
       <div class="mdc-layout-grid__inner">
         <div class="mdc-layout-grid__cell--span-4">
             <div class="center">
+              <h1 class="mdc-typography mdc-typography--headline2">Serverless Demo Shop</h1>
+              <img src="/static/canvas.png" width="120" height="120" alt="Serverless Icon">
               <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
               </div>
+            <!--
             <iframe class="interact"
             allow="microphone;"
             width="350"
             height="430"
             src="https://console.dialogflow.com/api-client/demo/embedded/2a166be2-1157-4300-a079-80b888458f3b">
+            -->
         </iframe>
         </div>
         <div class="mdc-layout-grid__cell--span-8">
@@ -49,14 +57,16 @@
 
         fetchOrders(googleUser)
         
+        var id_token = googleUser.getAuthResponse().id_token;
         console.log("ID Token: " + id_token);
         console.log("ID: " + profile.getId())
       }
+      /*
       window.onload = e => {
         fakeUser = {getAuthResponse: function() {return {id_token: 'foo'}}}
         fetchOrders(fakeUser)
       }
+      */
     </script>
-    <!-- <div id="orders" class=""></div> -->
   </body>
 </html>

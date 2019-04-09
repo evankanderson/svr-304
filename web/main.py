@@ -25,8 +25,12 @@ def read_jwt_token(req):
     """Extract the information from a JWT token."""
     if os.getenv('FLASK_ENV', '') == 'development':
         return {'sub': '1234'}
+    if not settings:
+        initialize()
+    app.logger.info('Checking auth for "%s"' % req.headers['Authorization'])
     jwt = req.headers['Authorization'].split(' ').pop()
     auth_request = requests.Request()
+    app.logger.info('Checking JWT "%s"' % jwt)
     id_info = id_token.verify_oauth2_token(jwt, auth_request,
                                            settings['client_id'])
     if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
@@ -53,6 +57,14 @@ def show_my_orders():
     data.extend(orders)
     return simplejson.dumps(data, for_json=True)
 
+@app.route('/chef')
+def show_todo_orders():
+    """Show any orders not yet marked done."""
+    orders = [x for x in model.OpenOrders(db)]
+    orders.sort(key=lambda x: x.date.ToDatetime().timestamp())
+    app.logger.info('Orders are: %s', orders)
+    return flask.render_template('chef.html', orders=orders)
+
 
 @app.route('/static/<path:path>')
 def serve_static(path):
@@ -61,6 +73,7 @@ def serve_static(path):
 
 @app.before_first_request
 def initialize():
+    app.logger.setLevel(logging.INFO)
     client_id = os.getenv('CLIENT_ID', '')
     if not client_id:
         config = db.document('config/app').get()

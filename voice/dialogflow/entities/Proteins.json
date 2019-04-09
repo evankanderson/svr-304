@@ -1,7 +1,8 @@
 {
-  "uuid": "d09249fe-57fa-11e9-ada1-b4d5bdf5237c",
+  "id": "144023ba-de5c-4d39-be6f-0b6db0087ee2",
   "name": "Proteins",
   "isOverridable": true,
   "isEnum": false,
-  "automatedExpansion": true
+  "automatedExpansion": true,
+  "allowFuzzyExtraction": false
 }

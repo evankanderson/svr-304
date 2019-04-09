@@ -34,16 +34,16 @@ function renderOrder(data) {
     if (item["items"] == undefined) {
       continue;
     }
-//    let list = [];
+    entree_box = domTree("div", { className: "mdc-layout-grid__inner"})
+    order = domTree("div", {className: "mdc-layout-grid__cell--span-12 order" },
+        domTree("div", { className: "mdc-card order" },
+          domTree("h3", { className: "order-item mdc-typography mdc-typography--headline5" },
+            new Date(item["date"]).toLocaleString()),
+          entree_box))
     for (let entree of item["items"]) {
-//      list.push(makeEntree(entree));
-      container.appendChild(makeEntree(entree))
+      entree_box.appendChild(makeEntree(entree))
     }
-/*    container.appendChild(
-      domTree("div", { id: item["id"], className: "mdc-layout-grid" }, 
-      domTree("div", {className: "mdc-layout-grid__inner" }, ...list))
-    );
-    */
+    container.appendChild(order)
   }
 }
 
@@ -64,11 +64,11 @@ function makeEntree(entree) {
       );
     }
   }
-  return     domTree("div", {className: "mdc-layout-grid__cell--span-6" },
+  return domTree("div", {className: "mdc-layout-grid__cell--span-6" },
       domTree("div", { className: "mdc-card" },
         domTree("div", { className: "mdc-card__primary-action" },
           domTree("h3", { className: "order-item mdc-typography mdc-typography--headline6" }, entree["item"]),
-          domTree("ul", {className: "mdc-list"}, ...selections)
+//          domTree("ul", {className: "mdc-list"}, ...selections)
         )
       
     )

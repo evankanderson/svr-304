@@ -1,0 +1,36 @@
+[
+  {
+    "id": "c239abfd-09fc-4a8e-9e58-b7ffbfb3aacd",
+    "data": [
+      {
+        "text": "I want a ",
+        "userDefined": false
+      },
+      {
+        "text": "salad",
+        "alias": "Dish",
+        "meta": "@Dishes",
+        "userDefined": true
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "c9919ae2-dcae-4f59-a403-52e97c71fb6a",
+    "data": [
+      {
+        "text": "Can I get a ",
+        "userDefined": false
+      },
+      {
+        "text": "grain bowl",
+        "alias": "Dish",
+        "meta": "@Dishes",
+        "userDefined": true
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  }
+]

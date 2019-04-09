@@ -1,0 +1,24 @@
+[
+  {
+    "id": "f2c2ce39-f7fe-4912-a4a2-182f6d56c3f9",
+    "data": [
+      {
+        "text": "That\u0027s it",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  },
+  {
+    "id": "64d85352-ef82-4a3a-bc6d-a9dfccd5fcbb",
+    "data": [
+      {
+        "text": "I\u0027m done with my order",
+        "userDefined": false
+      }
+    ],
+    "isTemplate": false,
+    "count": 0
+  }
+]

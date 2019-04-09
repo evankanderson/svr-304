@@ -68,13 +68,16 @@ class Order:
 
         self.id = data.reference.id
         self.__ref = data.reference
+        self.date = data.update_time
         self.items = []
         raw = data.to_dict() or {}
         logging.info('Data from %s is %s', self.__ref, raw)
-        logging.info('Path is %s (%s)', '/'.join(self.__ref._path), type(self.__ref))
+        logging.info('Path is %s (%s)', '/'.join(self.__ref._path),
+                     type(self.__ref))
         logging.info('Reading path: %s', self.__ref.path)
         self.user = raw.get('user', '0')
         self.done = raw.get('done', False)
+        self.token = raw.get('token', {})
         for item in raw.get('items', []):
             self.items.append(OrderItem(**item))
 
@@ -91,14 +94,17 @@ class Order:
             'id': self.id,
             'items': self.items,
             'user': self.user,
-            'done': self.done
+            'done': self.done,
+            'date': self.date.ToJsonString(),
+            # Don't show token in rendered JSON!
         }
 
     def as_dict(self):
         return {
             'user': self.user,
             'done': self.done,
-            'items': [x.as_dict() for x in self.items]
+            'items': [x.as_dict() for x in self.items],
+            'token': self.token,
         }
 
     def set(self):
@@ -113,7 +119,7 @@ def AllDishes(db):
 
 def OpenOrders(db):
     return (Order(x)
-            for x in db.collection('orders').where('done', '!=', 'True').get())
+            for x in db.collection('orders').where('done', '==', False).get())
 
 
 def UserOrders(db, user):

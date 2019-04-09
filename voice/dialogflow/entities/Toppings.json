@@ -1,7 +1,8 @@
 {
-  "uuid": "d0ceeab4-57fa-11e9-97fa-b4d5bdf5237c",
+  "id": "9b711094-a652-45ff-96c1-e24b929fc2be",
   "name": "Toppings",
   "isOverridable": true,
   "isEnum": false,
-  "automatedExpansion": true
+  "automatedExpansion": true,
+  "allowFuzzyExtraction": false
 }

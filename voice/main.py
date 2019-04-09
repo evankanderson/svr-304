@@ -8,6 +8,7 @@ To deploy:
 """
 
 import json
+import math
 import random
 import logging
 
@@ -36,7 +37,6 @@ def response(text: str, **kwargs):
 def extract_user(request_json: dict):
     request_json = request_json.get('originalDetectIntentRequest', {}).get(
         'payload', {})
-    logging.info(f'User is: "{request_json.get("user")}"')
     jwt = request_json.get('user', {}).get('idToken', '')
     if not jwt:
         return {'name': 'Anonymous', 'sub': 0}
@@ -47,6 +47,60 @@ def extract_user(request_json: dict):
     ]:
         raise AssertionError('Wrong JWT issuer: %s', info['iss'])
     return info
+
+
+def get_context(response_json, suffix):
+    contexts = response_json.get('queryResult', {}).get('outputContexts', [])
+    for c in contexts:
+        if c.get('name', '').endswith(suffix):
+            return c.get('parameters', {})
+    return {}
+
+
+def payment_data(settings, subtype):
+    return {
+        '@type': f'type.googleapis.com/google.actions.v2.{subtype}',
+        'orderOptions': {
+            'requestDeliveryAddress': False
+        },
+        'paymentOptions': {
+            'googleProvidedOptions': {
+                'supportedCardNetworks': ['VISA', 'MASTERCARD'],
+                'tokenizationParameters': {
+                    'tokenizationType': 'PAYMENT_GATEWAY',
+                    'parameters': {
+                        'gateway': 'square',
+                        'gatewayMerchantId': settings.get('square_id', 'TODO'),
+                    }
+                }
+            }
+        }
+    }
+
+
+def to_price(value: float):
+    frac, units = math.modf(value)
+    return {
+        'type': 'ACTUAL',
+        'amount': {
+            'currencyCode': 'USD',
+            'units': units,
+            'nanos': frac * 1000000000,
+        }
+    }
+
+
+def read_argument(request_json: dict, argument_name: str):
+    inputs = request_json.get('originalDetectIntentRequest', {}).get(
+        'payload', {}).get('inputs', [])
+    logging.info(f'Looking in inputs: {inputs}')
+    for item in inputs:
+        args = item.get('arguments', [])
+        for arg in args:
+            if arg.get('name') == argument_name:
+                return arg.get('extension', {})
+    logging.info(f'Couldn\'t find {argument_name} in {inputs}')
+    return {}
 
 
 def sale_items(request_json: dict):
@@ -64,7 +118,9 @@ def welcome(request_json: dict):
 
 def list_menu(request_json: dict):
     dishes = [x for x in model.AllDishes(db)]
-    concat = ', '.join(('a ' + x.name for x in dishes))
+    human = ['a ' + x.name for x in dishes]
+    human[-1] = 'and ' + human[-1]
+    concat = ', '.join(human)
     count = len(dishes)
     user = extract_user(request_json)
     logging.info(f'User is {user}')
@@ -82,73 +138,21 @@ def start_order(request_json: dict):
             'google': {
                 'expectUserResponse': True,
                 'systemIntent': {
-                    'intent': 'actions.intent.TRANSACTION_REQUIREMENTS_CHECK',
-                    'data': {
-                        '@type':
-                        'type.googleapis.com/google.actions.v2.TransactionRequirementsCheckSpec',
-                        'orderOptions': {
-                            'requestDeliveryAddress': False
-                        },
-                        'paymentOptions': {
-                            'googleProvidedOptions': {
-                                'supportedCardNetworks':
-                                ['VISA', 'MASTERCARD'],
-                                'tokenizationParameters': {
-                                    'tokenizationType': 'PAYMENT_GATEWAY',
-                                    'parameters': {
-                                        'gateway':
-                                        'square',
-                                        'gatewayMerchantId':
-                                        settings.get('square_id', 'TODO'),
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    'intent':
+                    'actions.intent.TRANSACTION_REQUIREMENTS_CHECK',
+                    'data':
+                    payment_data(settings, 'TransactionRequirementsCheckSpec')
                 }
             }
         }
     }
-    # followup = {
-    #     'name': 'actions.intent.TRANSACTION_REQUIREMENTS_CHECK',
-    #     'languageCode': 'en',
-    #     'parameters': {
-    #         'orderOptions': { 'requestDeliveryAddress': False},
-    #         'paymentOptions': {
-    #             'googleProvidedOptions': {
-    #                 'supportedCardNetworks': ['VISA', 'MASTERCARD'],
-    #                 'tokenizationParameters': {
-    #                     'tokenizationType': 'PAYMENT_GATEWAY',
-    #                     'parameters': {
-    #                         'gateway': 'square',
-    #                         'gatewayMerchantId': settings.get(
-    #                             'square_id', 'TODO'),
-    #                     }
-    #                 }
-    #             }
-    #         }
-    #     }
-    # }
-
-    # r = response(
-    #     'Not implemented yet.',
-    #     #followupEventInput=followup,
-    #     outputContexts=request_json.get('queryResult', {}).get(
-    #         'outputContexts', []))
-    # logging.info(f'Returning "{r}""')
-    # return r
 
 
 def validate_payment(request_json: dict):
-    inputs = request_json.get('originalDetectIntentRequest', {}).get(
-        'payload', {}).get('inputs', [])
-    okay = False
-    logging.info(f'Looking in inputs: {inputs}')
-    for item in inputs:
-        args = item.get('arguments', [])
-        for arg in args:
-            if arg.get('name') == 'TRANSACTION_REQUIREMENTS_CHECK_RESULT':
-                okay = arg.get('extension', {}).get('resultType') == 'OK'
+    checkResult = read_argument(request_json,
+                                'TRANSACTION_REQUIREMENTS_CHECK_RESULT')
+    okay = checkResult.get('resultType') == 'OK'
+
     if not okay:
         return response('Sorry, I couldn\'t get transaction information.')
 
@@ -165,23 +169,87 @@ def validate_payment(request_json: dict):
         }
     }
     return response(
-        'Okay, let\'s start your order',
-        outputContexts=[order_context],
-        followupEventInput={
-            'name': 'menu',
-            'languageCode': 'en'
-        })
+        'Okay, let\'s start your order', outputContexts=[order_context])
 
 
 def add_item(request_json: dict):
-    user = extract_user(request_json)
-    if 'email' not in 'user':
-        return response('Please log in first')
-    return response(f'Got it, {user["email"]}')
+    dish = request_json.get('queryResult', {}).get('parameters', {}).get(
+        'Dish', '')
+    if not dish:
+        return response('I\'m sorry, I don\'t understand what you wanted')
+    order_id = get_context(request_json, '/order').get('orderId')
+    order = model.Order(db.document(f'orders/{order_id}'))
+    order.items.append(model.OrderItem(dish))
+    order.set()
+    return response(f'Great, added a {dish} to your order')
 
 
-def test(request_json: dict):
-    return response('Dynamic answer')
+def checkout(request_json: dict):
+    order_id = get_context(request_json, '/order').get('orderId')
+    order = model.Order(db.document(f'orders/{order_id}'))
+    prices = {}
+    for d in model.AllDishes(db):
+        prices[d.name] = d.price
+    total = 0
+    lineItems = []
+    id = 0
+    for item in order.items:
+        id += 1
+        total += prices[item.name]
+        lineItems.append({
+            'id': str(id),
+            'name': item.name,
+            'type': 'REGULAR',
+            'price': to_price(prices[item.name]),
+            'quantity': 1,
+        })
+
+    data = payment_data(settings, 'TransactionDecisionValueSpec')
+    data['proposedOrder'] = {
+        'id': order_id,
+        'cart': {
+            'merchant': {
+                'id': 'serverless-next-demo',
+                'name': 'Next Demo'
+            },
+            'lineItems': lineItems,
+        },
+        'totalPrice': to_price(total)
+    }
+    result = {
+        'payload': {
+            'google': {
+                'expectUserResponse': True,
+                'systemIntent': {
+                    'intent': 'actions.intent.TRANSACTION_DECISION',
+                    'data': data
+                }
+            }
+        }
+    }
+    logging.info(f'Returning {result}')
+    return result
+
+
+def receipt(request_json: dict):
+    decision = read_argument(request_json, 'TRANSACTION_DECISION_VALUE')
+    logging.info(f'Transaction decision: {decision}')
+    okay = decision.get('checkResult', {}).get('resultType') == 'OK'
+    accepted = decision.get('userDecision') == 'ORDER_ACCEPTED'
+    if not (okay and accepted):
+        return response('I\'m sorry. I hope to serverless you again soon.')
+    instrument = decision.get('order', {}).get(
+        'paymentInfo', {}).get('googleProvidedPaymentInstrument')
+    if not instrument:
+        return response(
+            'Sorry, I couldn\'t read your transaction information.')
+    order_id = get_context(request_json, '/order').get('orderId')
+    order = model.Order(db.document(f'orders/{order_id}'))
+    logging.info(f'Storing token from {instrument}')
+    order.token = instrument.get('instrumentToken')
+    order.set()
+    return response(
+        'Thanks for your order. We\'ll get started on it right away!')
 
 
 HANDLERS = {
@@ -191,7 +259,8 @@ HANDLERS = {
     'buy': start_order,
     'start': validate_payment,
     'add': add_item,
-    'test': test,
+    'checkout': checkout,
+    'receipt': receipt,
 }
 
 
