@@ -1,0 +1,19 @@
+version: 2
+updates:
+- package-ecosystem: "pip"
+  directories:
+  - /background/
+  
+  - /voice/
+  
+  - /web/
+  schedule:
+    interval: "weekly"  # .schedule_interval
+  open-pull-requests-limit: 10
+
+- package-ecosystem: "npm"
+  directories:
+  - /voice/dialogflow/
+  schedule:
+    interval: "weekly"  # .schedule_interval
+  open-pull-requests-limit: 10
